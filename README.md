@@ -49,6 +49,6 @@ Contributions to the Code Runner API are welcome! If you encounter any issues or
 
 ## License
 
-The Code Runner API is licensed under the [MIT License](LICENSE).
+The Code Runner API is licensed under the **MIT License**.
 
 
