@@ -13,6 +13,10 @@ const User = require('../models/users');
 const secretKey = process.env.JWT_SECRET;
 router.use(bodyParser.urlencoded({ extended: true }));
 
+function validateInput(code){
+    if(code.length===0) return res.status(400).json({message:"Code not found!"});
+}
+
 async function updateDatabase(id, code, language) {
     const userCode = new Code({
         user: id,
@@ -44,14 +48,15 @@ router.get('/', verifyToken, async (req, res) => {
     const { id } = req.decoded;
     const userCodes = await Code.find({ user: id });
     if (userCodes.length > 0) {
-        res.status(200).json({ userCodes });
+        return res.status(200).json({ userCodes });
     }
-    res.status(200).json({ message: "No code found!" });
+    return res.status(204).json({ message: "No code found!", status:204 });
 });
 
 router.post('/python', verifyToken, async (req, res) => {
     const { id } = req.decoded;
     const code = req.body.ucode;
+    validateInput(code);
     const commandLineArgs = req.body.args || [];
     let codeOutput = '';
     let codeError = '';
@@ -82,6 +87,7 @@ router.post('/c', verifyToken, async (req, res) => {
     const { id } = req.decoded;
     const code = req.body.ucode;
     const commandLineArgs = req.body.args || [];
+    validateInput(code);
     let codeOutput = '';
     let codeError = '';
     const codeId = await updateDatabase(id, code, "c");
@@ -135,6 +141,7 @@ router.post('/cpp', verifyToken, async (req, res) => {
     const { id } = req.decoded;
     const code = req.body.ucode;
     const commandLineArgs = req.body.args || [];
+    validateInput(code);
     let codeOutput = '';
     let codeError = '';
     const codeId = await updateDatabase(id, code, "c++");
@@ -188,6 +195,7 @@ router.post("/js", verifyToken, async (req, res) => {
     const { id } = req.decoded;
     const code = req.body.ucode;
     const commandLineArgs = req.body.args || [];
+    validateInput(code);
     let codeOutput = '';
     let codeError = '';
     const codeId = await updateDatabase(id, code, "javascript");
@@ -209,7 +217,7 @@ router.post("/js", verifyToken, async (req, res) => {
         if (code === 0) {
             res.status(200).json({ output: codeOutput, id: codeId });
         } else {
-            console.log(codeError);
+            //console.log(codeError);
             res.status(500).json({ err: codeError, id: codeId });
         }
     });
@@ -219,6 +227,7 @@ router.post("/php", verifyToken, async (req, res) => {
     const { id } = req.decoded;
     const code = req.body.ucode;
     const commandLineArgs = req.body.args || [];
+    validateInput(code);
     let codeOutput = '';
     const codeId = await updateDatabase(id, code, "php");
 
@@ -243,11 +252,12 @@ router.patch("/python", verifyToken, async (req, res) => {
     const id = req.body.code_id;
     const code = req.body.ucode;
     const commandLineArgs = req.body.args || [];
+    validateInput(code);
     let codeOutput = '';
     let codeError = '';
 
     const updated = await Code.updateOne({ _id: id }, { code: code });
-    if (updated.modifiedCount === 0) {
+    if (updated.modifiedCount === 0&&updated.matchedCount===0) {
         res.status(404).json({ message: "Object not found!" })
     } else {
         const pythonProcess = spawn('python', ['-c', code, ...commandLineArgs]);
@@ -275,11 +285,12 @@ router.patch("/c", verifyToken, async (req, res) => {
     const id = req.body.code_id;
     const code = req.body.ucode;
     const commandLineArgs = req.body.args || [];
+    validateInput(code);
     let codeOutput = '';
     let codeError = '';
 
     const updated = await Code.updateOne({ _id: id }, { code: code });
-    if (updated.modifiedCount === 0) {
+    if (updated.modifiedCount === 0&&updated.matchedCount===0) {
         res.status(404).json({ message: "Object not found!" })
     } else {
         const cFilePath = `./temp/${id}.c`;
@@ -331,11 +342,13 @@ router.patch("/cpp", verifyToken, async (req, res) => {
     const id = req.body.code_id;
     const code = req.body.ucode;
     const commandLineArgs = req.body.args || [];
+    validateInput(code);
     let codeOutput = '';
     let codeError = '';
 
     const updated = await Code.updateOne({ _id: id }, { code: code });
-    if (updated.modifiedCount === 0) {
+    console.log(updated);
+    if (updated.modifiedCount === 0&&updated.matchedCount===0) {
         res.status(404).json({ message: "Object not found!" })
     }
     else {
@@ -388,11 +401,12 @@ router.patch("/js", verifyToken, async (req, res) => {
     const id = req.body.code_id;
     const code = req.body.ucode;
     const commandLineArgs = req.body.args || [];
+    validateInput(code);
     let codeOutput = '';
     let codeError = '';
 
     const updated = await Code.updateOne({ _id: id }, { code: code });
-    if (updated.modifiedCount === 0) {
+    if (updated.modifiedCount === 0&&updated.matchedCount===0) {
         res.status(404).json({ message: "Object not found!" })
     } else {
         const jsProcess = spawn("node", ["-e", code, ...commandLineArgs]);
@@ -412,7 +426,7 @@ router.patch("/js", verifyToken, async (req, res) => {
             if (code === 0) {
                 res.status(200).json({ output: codeOutput });
             } else {
-                console.log(codeError);
+                //console.log(codeError);
                 res.status(500).json({ err: codeError });
             }
         });
@@ -423,11 +437,12 @@ router.patch("/php", verifyToken, async (req, res) => {
     const id = req.body.code_id;
     const code = req.body.ucode;
     const commandLineArgs = req.body.args || [];
+    validateInput(code);
     let codeOutput = '';
     let codeError = '';
 
     const updated = await Code.updateOne({ _id: id }, { code: code });
-    if (updated.modifiedCount === 0) {
+    if (updated.modifiedCount === 0&&updated.matchedCount===0) {
         res.status(404).json({ message: "Object not found!" })
     } else {
         const phpProcess = spawn("php", ["-r", `${code}`, ...commandLineArgs]);
@@ -453,8 +468,10 @@ router.delete("/:id", verifyToken, async (req, res) => {
     const { id } = req.decoded;
     const code_id = req.params.id;
 
+    //console.log(code_id);
+
     const deleted = await Code.deleteOne({ _id: code_id });
-    if (deleted.deletedCount === 0) {
+    if (deleted.deletedCount === 0&&updated.matchedCount===0) {
         await User.updateOne({ _id: id }, { $pull: { codes: code_id } });
         res.status(404).json({ message: "Object Not Found!" });
     } else {
