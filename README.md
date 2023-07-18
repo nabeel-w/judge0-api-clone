@@ -1,4 +1,4 @@
-# CodeSpace-API
+# CodeSpace
 
 The CodeSpace API allows users to execute and manage code snippets in different programming languages. Users can register, authenticate, and execute code in languages such as Python, C, C++, JavaScript, and PHP. The API provides endpoints for code execution, code management, user authentication, and registration.
 
