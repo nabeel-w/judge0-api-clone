@@ -11,7 +11,7 @@ const app=express();
 //const corsOptions = {origin: ['http://localhost:3000/']};
 app.use(cors( {origin: ['http://localhost:3000']}));
 
-mongoose.connect("mongodb://127.0.0.1:27017/judgeDB", {useNewUrlParser: true});
+mongoose.connect("mongodb+srv://admin-nabeel:N%40beel3112@cluster0.3jl39cv.mongodb.net/codeDB?retryWrites=true&w=majority", {useNewUrlParser: true});
 
 app.use("/auth",authRoute);
 app.use("/code",codeRoute);
