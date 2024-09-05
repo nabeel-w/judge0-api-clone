@@ -18,7 +18,7 @@ The Code Runner API is built using the following technologies:
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/nabeel-w/judge0-api-clone/
+   git clone https://github.com/nabeel-w/Code-Space/
    ```
 2. Install the dependencies:
 
@@ -27,9 +27,7 @@ The Code Runner API is built using the following technologies:
    ```
 
 3. Set up environment variables:
-   
-   - Create a `.env` file based on the provided `.env.example` file.
-   - Provide the necessary environment variables in the `.env` file, such as `PORT` for the server port and `JWT_SECRET` for the JWT secret key.
+   - Provide the necessary environment variables in the `.env` file, such as `PORT` for the server port, `MONGO_LINK` for the mongo database connection and `JWT_SECRET` for the JWT secret key.
 
 4. Start the server:
 
@@ -45,10 +43,6 @@ For detailed information about the available API endpoints, please refer to the 
 
 ## Contributing
 
-Contributions to the Code Runner API are welcome! If you encounter any issues or have suggestions for improvements, please feel free to open an issue or submit a pull request.
-
-## License
-
-The Code Runner API is licensed under the **MIT License**.
+Contributions to the Code Space are welcome! If you encounter any issues or have suggestions for improvements, please feel free to open an issue or submit a pull request.
 
 
